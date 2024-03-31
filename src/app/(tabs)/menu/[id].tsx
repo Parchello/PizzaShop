@@ -3,19 +3,25 @@ import React, { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import products from "@/assets/data/products";
 import Button from "@/src/components/Button";
+import { useCart } from "@/src/provider/CartProvider";
+import { PizzaSize } from "@/src/types";
 
-const sizes = ["S", "M", "L", "XL"];
+const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
 const ProductsDetailScreen = () => {
-  const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
   const { id } = useLocalSearchParams();
+  const { addItem } = useCart();
 
   const product = products.find((p) => p.id.toString() === id);
   const defaultImage =
     "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
   const addToCart = () => {
-    console.warn("Added to cart", selectedSize);
+    if (!product) {
+      return;
+    }
+    addItem(product, selectedSize);
   };
 
   if (!product) {

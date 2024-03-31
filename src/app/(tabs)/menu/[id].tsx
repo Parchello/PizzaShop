@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import React, { useState } from "react";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import products from "@/assets/data/products";
 import Button from "@/src/components/Button";
 import { useCart } from "@/src/provider/CartProvider";
@@ -13,6 +13,8 @@ const ProductsDetailScreen = () => {
   const { id } = useLocalSearchParams();
   const { addItem } = useCart();
 
+  const router = useRouter();
+
   const product = products.find((p) => p.id.toString() === id);
   const defaultImage =
     "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
@@ -22,6 +24,7 @@ const ProductsDetailScreen = () => {
       return;
     }
     addItem(product, selectedSize);
+    router.push("/cart");
   };
 
   if (!product) {

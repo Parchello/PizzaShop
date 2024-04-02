@@ -2,7 +2,7 @@ import Button from "@/src/components/Button";
 import { defaultImage } from "@/src/components/ProductListItem";
 import Colors from "@/src/constants/Colors";
 import { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
+import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams } from "expo-router";
 
@@ -46,6 +46,23 @@ const CreateProductScreen = () => {
     resetField();
   };
 
+  const onUpdate = () => {
+    if (!viladateInput()) {
+      return;
+    }
+    console.warn("Updated product", name, price);
+    //   тут буде збереження даних
+    resetField();
+  };
+
+  const onSubmit = () => {
+    if (isUpdating) {
+      onUpdate();
+    } else {
+      onCreate();
+    }
+  };
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -60,6 +77,17 @@ const CreateProductScreen = () => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+  };
+
+  const onDelete = () => {
+    console.warn("Deleted!");
+  };
+
+  const confirmDelete = () => {
+    Alert.alert("Confirm", "Are you sure you want to delete?", [
+      { text: "Cancel" },
+      { text: "Delete", style: "destructive", onPress: onDelete },
+    ]);
   };
 
   return (
@@ -88,7 +116,12 @@ const CreateProductScreen = () => {
         onChangeText={setPrice}
       />
       <Text style={styles.error}>{errors}</Text>
-      <Button text={isUpdating ? "Update" : "Create "} onPress={onCreate} />
+      <Button text={isUpdating ? "Update" : "Create "} onPress={onSubmit} />
+      {isUpdating && (
+        <Text onPress={confirmDelete} style={styles.textButton}>
+          Delete
+        </Text>
+      )}
     </View>
   );
 };

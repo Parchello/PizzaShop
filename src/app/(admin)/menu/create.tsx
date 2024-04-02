@@ -4,14 +4,16 @@ import Colors from "@/src/constants/Colors";
 import { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-
   const [errors, setErrors] = useState("");
-
   const [image, setImage] = useState<string | null>(null);
+
+  const { id } = useLocalSearchParams();
+  const isUpdating = !!id;
 
   const resetField = () => {
     setName("");
@@ -62,6 +64,9 @@ const CreateProductScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{ title: isUpdating ? "Update product" : "Create product" }}
+      />
       <Image source={{ uri: image || defaultImage }} style={styles.image} />
       <Text onPress={pickImage} style={styles.textButton}>
         Select Image
@@ -83,7 +88,7 @@ const CreateProductScreen = () => {
         onChangeText={setPrice}
       />
       <Text style={styles.error}>{errors}</Text>
-      <Button text="Create product" onPress={onCreate} />
+      <Button text={isUpdating ? "Update" : "Create "} onPress={onCreate} />
     </View>
   );
 };

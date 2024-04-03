@@ -21,6 +21,7 @@ const OrderListItem = ({ orders }: OrderListItemProps) => {
           <Text style={styles.title}>Order #{orders.id}</Text>
           <Text style={styles.time}>{dayjs(orders.created_at).fromNow()}</Text>
         </View>
+
         <Text style={styles.status}>{orders.status}</Text>
       </Pressable>
     </Link>
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 10,
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },

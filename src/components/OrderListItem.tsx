@@ -1,16 +1,25 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import orders from "@/assets/data/orders";
 import Colors from "../constants/Colors";
+import { Order } from "../types";
+import { Link, useSegments } from "expo-router";
 
-const OrderListItem = ({ orders }) => {
+type OrderListItemProps = {
+  orders: Order;
+};
+
+const OrderListItem = ({ orders }: OrderListItemProps) => {
+  const segments = useSegments();
   return (
-    <View style={styles.container}>
-      <View style={styles.subContainer}>
-        <Text style={styles.title}>Order #{orders.id}</Text>
-        <Text>{orders.created_at}</Text>
-      </View>
-      <Text style={styles.status}>{orders.status}</Text>
-    </View>
+    <Link href={`/${segments[0]}/orders/${orders.id}`} asChild>
+      <Pressable style={styles.container}>
+        <View style={styles.subContainer}>
+          <Text style={styles.title}>Order #{orders.id}</Text>
+          <Text>{orders.created_at}</Text>
+        </View>
+        <Text style={styles.status}>{orders.status}</Text>
+      </Pressable>
+    </Link>
   );
 };
 

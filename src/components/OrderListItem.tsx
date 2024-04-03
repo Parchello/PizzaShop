@@ -1,21 +1,25 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import orders from "@/assets/data/orders";
+// import orders from "@/assets/data/orders";
 import Colors from "../constants/Colors";
 import { Order } from "../types";
 import { Link, useSegments } from "expo-router";
+import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from "dayjs";
 
 type OrderListItemProps = {
   orders: Order;
 };
+
+dayjs.extend(relativeTime);
 
 const OrderListItem = ({ orders }: OrderListItemProps) => {
   const segments = useSegments();
   return (
     <Link href={`/${segments[0]}/orders/${orders.id}`} asChild>
       <Pressable style={styles.container}>
-        <View style={styles.subContainer}>
+        <View>
           <Text style={styles.title}>Order #{orders.id}</Text>
-          <Text>{orders.created_at}</Text>
+          <Text style={styles.time}>{dayjs(orders.created_at).fromNow()}</Text>
         </View>
         <Text style={styles.status}>{orders.status}</Text>
       </Pressable>
@@ -30,7 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 10,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -44,5 +48,8 @@ const styles = StyleSheet.create({
     color: Colors.light.tint,
     fontWeight: "bold",
   },
-  subContainer: {},
+
+  time: {
+    color: "grey",
+  },
 });

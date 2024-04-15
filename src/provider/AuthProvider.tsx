@@ -1,12 +1,40 @@
-import { PropsWithChildren, createContext, useEffect } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { supabase } from "../lib/supabase";
+import { Session } from "@supabase/supabase-js";
 
-type AuthData = {};
+type AuthData = {
+  session: Session | null;
+  loading: boolean;
+};
 
-const AuthContext = createContext<AuthData>({});
+const AuthContext = createContext<AuthData>({
+  session: null,
+  loading: true,
+});
 
 export default function AuthProvider({ children }: PropsWithChildren) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    console.log("Auth provider is mou8nted");
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setLoading(false);
+    };
+    fetchSession();
   }, []);
-  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ session, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
+
+export const useAuth = () => useContext(AuthContext);

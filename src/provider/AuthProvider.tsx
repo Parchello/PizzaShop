@@ -10,12 +10,16 @@ import { Session } from "@supabase/supabase-js";
 
 type AuthData = {
   session: Session | null;
+  profile: any;
   loading: boolean;
+  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthData>({
   session: null,
+  profile: null,
   loading: true,
+  isAdmin: false,
 });
 
 export default function AuthProvider({ children }: PropsWithChildren) {
@@ -45,7 +49,9 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, loading }}>
+    <AuthContext.Provider
+      value={{ session, loading, profile, isAdmin: profile?.group === "ADMIN" }}
+    >
       {children}
     </AuthContext.Provider>
   );
